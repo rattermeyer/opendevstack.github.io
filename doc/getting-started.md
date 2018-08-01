@@ -732,9 +732,8 @@ We will now build base images for jenkins and jenkins slave:
 
 * Clone the [cicd project](https://github.com/opendevstack/cicd)
 * Customize the configuration in the `ods-configuration` project at **ods-core > jenkins > ocp-config > bc.env**
-* Inside the ods-core project execute `tailor`
+* Inside the ods-core project execute `tailor update`
 
-`tailor -n cd --template-dir jenkins/ocp-config --param-dir ../ods-configuration/ods-core/jenkins/ocp-config update --selector app=jenkins`
 
 * Start jenkins slave base build: `oc start-build -n cd jenkins-slave-base`
 * check that builds for `jenkins-master` and `jenkins-slave-base` are running and successful.
@@ -747,11 +746,7 @@ These slave images are located in the project [jenkins-slave-dockerimages](https
 So as a first step clone this repository.
 Make the required customizations in the `ods-configuration` under **jenkins-slaves-dockerimages > maven > ocp-config > bc.env**
 
-and run `tailor` inside the `jenkins-slave-dockerimages` project:
-
-```
-tailor -n cd --template-dir maven/ocp-config --param-dir ../../ods-configuration/ods-project-quickstarters/jenkins-slaves/maven/ocp-config update --selector app=jenkins-slave-maven
-```
+and run `tailor update` inside the `jenkins-slave-dockerimages` project:
 
 and start the build: `oc start-build -n cd jenkins-slave-maven`.
 

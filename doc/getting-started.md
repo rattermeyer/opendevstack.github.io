@@ -593,7 +593,7 @@ sudo service atlbitbucket restart
 ```
 
 We need this certificate for the Rundeck part later as well.
-On the atlassian1 server clone the `ocp-project-quickstarters` from your Bitbucket server.
+On the atlassian1 server clone the `ods-project-quickstarters` from your Bitbucket server.
 ```
 sudo su - rundeck
 git clone http://192.168.56.31:7990/scm/opendevstack/ods-project-quickstarters.git

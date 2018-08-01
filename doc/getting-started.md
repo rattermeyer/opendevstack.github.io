@@ -510,8 +510,11 @@ It is *important* not to use the `system` user, because Jenkins does not allow a
 
 ### Configure the path for the OC CLI
 The OC CLI is automatically downloaded after "minishift start".
-To add it to the path you can run "minishift oc-env" and execute the
-displayed command.
+To add it to the path you can run 
+```
+minishift oc-env
+```
+and execute the displayed command.
 
 #### Login with the CLI
 You have to login via the CLI with

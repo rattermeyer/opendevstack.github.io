@@ -667,7 +667,7 @@ After this you will have to create two hosted maven2 repositories and one proxy 
 | atlassian_public | maven2 | proxy  | checked | Release        | Strict        | atlassian_public  | checked                 | Disable-redeploy  | https://maven.atlassian.com/content/repositories/atlassian-public/ |
 
 Add the three repositories to the *maven-public* group.
-You can access the settings for the maven public group by clicking on int in the repositories list.
+You can access the settings for the maven public group by clicking on the group in the repositories list.
 
 ##### Configure user and roles
 First disable the anonymous access in the **Security > Anonymous** section.

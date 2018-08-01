@@ -750,7 +750,7 @@ Make the required customizations in the `ods-configuration` under **jenkins-slav
 and run `tailor` inside the `jenkins-slave-dockerimages` project:
 
 ```
-tailor -n cd --template-dir maven/ocp-config --param-dir ../ods-configuration/jenkins-slaves-dockerimages/maven/ocp-config update --selector app=jenkins-slave-maven
+tailor -n cd --template-dir maven/ocp-config --param-dir ../../ods-configuration/ods-project-quickstarters/jenkins-slaves/maven/ocp-config update --selector app=jenkins-slave-maven
 ```
 
 and start the build: `oc start-build -n cd jenkins-slave-maven`.

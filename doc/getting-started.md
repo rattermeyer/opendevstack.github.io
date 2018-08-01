@@ -429,7 +429,7 @@ On the Project Dashboard Navigate to the "Settings" menu and grant the group "op
 Navigate to the **ods-core/infrastructure-setup/scripts** directory and execute
 `mirror-repos.sh`
 
-Verify that you have mirrored the github repos have been populated in your Bitbucket instance.
+Verify that you have mirrored the github repos and that they have been populated in your Bitbucket instance. The ods-configuration repositpory will remain empty.
 
 #### Rundeck Setup
 ##### Setup Application

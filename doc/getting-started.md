@@ -734,7 +734,7 @@ We will now build base images for jenkins and jenkins slave:
 * Customize the configuration in the `ods-configuration` project at **ods-core > jenkins > ocp-config > bc.env**
 * Inside the ods-core project execute `tailor`
 
-`tailor -n cd --template-dir jenkins/ocp-config --param-dir ../ods-configuration/ocd-core/jenkins/ocp-config update --selector app=jenkins`
+`tailor -n cd --template-dir jenkins/ocp-config --param-dir ../ods-configuration/ods-core/jenkins/ocp-config update --selector app=jenkins`
 
 * Start jenkins slave base build: `oc start-build -n cd jenkins-slave-base`
 * check that builds for `jenkins-master` and `jenkins-slave-base` are running and successful.

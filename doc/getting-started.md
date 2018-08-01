@@ -739,7 +739,7 @@ These slave images are located in the project [jenkins-slave-dockerimages](https
 So as a first step clone this repository.
 Make the required customizations in the `ods-configuration` under **jenkins-slaves-dockerimages > maven > ocp-config > bc.env**
 
-and run `tailor update` inside`ods-project-quickstarters\jenkins-slaves\maven\ocp-config`:
+and run `tailor update` inside `ods-project-quickstarters\jenkins-slaves\maven\ocp-config`:
 
 and start the build: `oc start-build -n cd jenkins-slave-maven`.
 

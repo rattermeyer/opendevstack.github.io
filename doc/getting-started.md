@@ -700,8 +700,8 @@ END_TODO
 
 ### Import base templates
 After you have configured Nexus3, import the base templates for OpenShift.
-Clone the [ocp-templates repository](https://www.github.com/opendevstack/ocp-templates).
-Navigate to the folder, where the cloned repository is located and navigate to the `scripts` subfolder.
+Clone the [ods-project-quickstarters](https://www.github.com/opendevstack/ods-project-quickstarters).
+Navigate to the folder, where the cloned repository is located and navigate to the `ocp-templates/scripts` subfolder.
 From with this folder, check if you are still logged in to the OpenShift CLI and login, if necessary.
 
 ```
@@ -710,11 +710,6 @@ From with this folder, check if you are still logged in to the OpenShift CLI and
 If not running under a cygwin environment, but with win-bash and bash located on your PATH, simply run
 ```
 bash ./upload-templates.sh
-```
-
-Alternatively you can use the powershell script on windows:
-```
-./upload-templates.ps1
 ```
 
 This script creates the basic templates used by the OpenDevStack quickstarters in the `cd` project.
@@ -730,10 +725,8 @@ oc process -n cd templates/secrets -p PROJECT=cd | oc create -n cd -f-
 
 We will now build base images for jenkins and jenkins slave:
 
-* Clone the [cicd project](https://github.com/opendevstack/cicd)
 * Customize the configuration in the `ods-configuration` project at **ods-core > jenkins > ocp-config > bc.env**
-* Inside the ods-core project execute `tailor update`
-
+* Execute `tailor update` inside ods-core/jenkins/ocp-config: 
 
 * Start jenkins slave base build: `oc start-build -n cd jenkins-slave-base`
 * check that builds for `jenkins-master` and `jenkins-slave-base` are running and successful.
@@ -746,7 +739,7 @@ These slave images are located in the project [jenkins-slave-dockerimages](https
 So as a first step clone this repository.
 Make the required customizations in the `ods-configuration` under **jenkins-slaves-dockerimages > maven > ocp-config > bc.env**
 
-and run `tailor update` inside the `jenkins-slave-dockerimages` project:
+and run `tailor update` inside`ods-project-quickstarters\jenkins-slaves\maven\ocp-config`:
 
 and start the build: `oc start-build -n cd jenkins-slave-maven`.
 

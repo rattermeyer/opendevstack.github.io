@@ -834,8 +834,8 @@ Clone the provisioning application repository.
 Because we disabled anonymous access for nexus, we need to provide some data.
 What you need to provide are environment variables:
 
-* NOMAD_USERNAME
-* NOMAD_PASSWORD
+* NEXUS_USERNAME
+* NEXUS_PASSWORD
 
 Earlier we used `developer / developer`.
 

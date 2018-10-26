@@ -36,7 +36,7 @@ tags: documentation
 			- [Configure Repository Manager](#configure-repository-manager)
 		- [Import base templates](#import-base-templates)
 		- [Configure CD user](#configure-cd-user)
-		- [Setup and Configure Sonarqube](#setup-and-configure-sonarqube)	
+		- [Setup and Configure Sonarqube](#setup-and-configure-sonarqube)
 		- [Configure Rundeck](#configure-rundeck)
 			- [Create Quickstarters project](#create-quickstarters-project)
 			- [Openshift API token](#openshift-api-token)
@@ -290,6 +290,27 @@ Go to the **Global permissions** menu.
 In the groups section add the `bitbucket-administrators` group with *System Admin* rights.
 Add the `bitbucket-users` group with *Project Creator* rights.
 
+##### Configure CD user
+The continuous delivery process requires a dedicated system user in crowd for accessing bitbucket.
+Access the [crowd console](http://192.168.56.31:8095/crowd/console/) and choose **Add user** in the **Users** menu.
+Enter valid credentials. The only restriction here is, that the user has the username `cd_user` and that the user belongs to the internal crowd directory.
+After creating the user you have to add the following groups:
+
+| Group              |
+| ------------------ |
+| opendevstack-users |
+| bitbucket-users    |
+
+After you have created the user in crowd, you must add the public cd_user SSH key to the Bitbucket account.
+
+Open [Bitbucket](http://192.168.56.31:7990/), login with your crowd administration user and go to the administration.
+Here open the User section. If you can't see the CD user, you have to synchronize the Crowd directory in the **User directories** section.
+
+Now login to Bitbucket with your `cd_user` credentials. Navigate to `Manage Account > Personal access tokens` and create a token.
+
+Token name: openshift-access and leave the permissions to "Read".
+Copy the displayed token and save it for later access.
+
 #### Jira Setup
 ##### Setup Application
 ```
@@ -496,7 +517,7 @@ To do so, follow the installation instructions of the [Minishift Getting Started
 
 Before you start up Minishift with the `minishift start` command you will have to create or modify a `config.json` file.
 This file is located in the `.minishift/config` folder in the user home directory.
-On a Windows system, you will find this file under `C:\Users\<username>\.minishift\config\config.json`.
+Under cygwin, you will find this file under `~\.minishift\config\config.json`.
 If the file doesn't exist, you will have to create it.
 The file has to have the following content:
 ```javascript
@@ -683,17 +704,17 @@ Now create three Blob Stores.
 
 After this step you will have to create the following repositories in the **Repositories** Subsection.
 
-| Name             | Format | Type   | Online  | Version policy | Layout policy | Storage    | Strict Content Type Validation | Deployment policy | Remote Storage | belongs to group                                                    |
-| ---------------- | ------ | ------ | ------- | -------------- | ------------- | ---------- | ------------------------------ | ----------------- | ------------------------------------------------------------------ | ------------ |
-| candidates       | maven2 | hosted | checked | Release        | Strict        | candidates | checked                        | Disable-redeploy  | | none                                                                   |
-| releases         | maven2 | hosted | checked | Release        | Strict        | releases   | checked                        | Disable-redeploy  | | none                                                                   |
-| npmjs           | npm     | proxy  | checked |                |               | default    | checked                        |   |                 | https://registry.npmjs.org | 
-| atlassian_public | maven2 | proxy  | checked | Release        | Strict        | atlassian_public  | checked                 | Disable-redeploy  | https://maven.atlassian.com/content/repositories/atlassian-public/ |
-| jcenter | maven2 | proxy  | checked | Release        | Strict        | default  | checked                 | Disable-redeploy  | https://jcenter.bintray.com | maven-public
-| sbt-plugins | maven2 | proxy  | checked | Release        | permissive | default  | unchecked                 | Disable-redeploy  | http://dl.bintray.com/sbt/sbt-plugin-releases/ | ivy-releases
-| sbt-releases | maven2 | proxy  | checked | Release        | permissive | default  | unchecked                 | Disable-redeploy  | https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases | ivy-releases
-| typesafe-ivy-releases | maven2 | proxy  | checked | Release        | permissive | default  | unchecked                 | Disable-redeploy  | https://dl.bintray.com/typesafe/ivy-releases | ivy-releases
-| ivy-releases | maven2 | group  | checked | Release        | permissive | default  | unchecked                 | Disable-redeploy  | |
+| Name                  | Format | Type   | Online  | Version policy | Layout policy | Storage          | Strict Content Type Validation | Deployment policy | Remote Storage                                                     | belongs to group           |
+| --------------------- | ------ | ------ | ------- | -------------- | ------------- | ---------------- | ------------------------------ | ----------------- | ------------------------------------------------------------------ | -------------------------- |
+| candidates            | maven2 | hosted | checked | Release        | Strict        | candidates       | checked                        | Disable-redeploy  |                                                                    | none                       |
+| releases              | maven2 | hosted | checked | Release        | Strict        | releases         | checked                        | Disable-redeploy  |                                                                    | none                       |
+| npmjs                 | npm    | proxy  | checked |                |               | default          | checked                        |                   | https://registry.npmjs.org                                                                    | |
+| atlassian_public      | maven2 | proxy  | checked | Release        | Strict        | atlassian_public | checked                        | Disable-redeploy  | https://maven.atlassian.com/content/repositories/atlassian-public/ |                            |
+| jcenter               | maven2 | proxy  | checked | Release        | Strict        | default          | checked                        | Disable-redeploy  | https://jcenter.bintray.com                                        | maven-public               |
+| sbt-plugins           | maven2 | proxy  | checked | Release        | permissive    | default          | unchecked                      | Disable-redeploy  | http://dl.bintray.com/sbt/sbt-plugin-releases/                     | ivy-releases               |
+| sbt-releases          | maven2 | proxy  | checked | Release        | permissive    | default          | unchecked                      | Disable-redeploy  | https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases            | ivy-releases               |
+| typesafe-ivy-releases | maven2 | proxy  | checked | Release        | permissive    | default          | unchecked                      | Disable-redeploy  | https://dl.bintray.com/typesafe/ivy-releases                       | ivy-releases               |
+| ivy-releases          | maven2 | group  | checked | Release        | permissive    | default          | unchecked                      | Disable-redeploy  |                                                                    |                            |
 
 
 ##### Configure user and roles
@@ -755,7 +776,7 @@ oc process -n cd templates/secrets -p PROJECT=cd | oc create -n cd -f-
 We will now build base images for jenkins and jenkins slave:
 
 * Customize the configuration in the `ods-configuration` project at **ods-core > jenkins > ocp-config > bc.env**
-* Execute `tailor update` inside ods-core/jenkins/ocp-config:
+* Execute `tailor update` inside `ods-core/jenkins/ocp-config`:
 
 * Start jenkins slave base build: `oc start-build -n cd jenkins-slave-base`
 * check that builds for `jenkins-master` and `jenkins-slave-base` are running and successful.
@@ -775,17 +796,7 @@ and start the build: `oc start-build -n cd jenkins-slave-maven`.
 Repeat for every project type you require.
 
 ### Configure CD user
-The continuous delivery process requires a dedicated system user in crowd for accessing bitbucket.
-Access the [crowd console](http://192.168.56.31:8095/crowd/console/) and choose **Add user** in the **Users** menu.
-Enter valid credentials. The only restriction here is, that the user has the username `cd_user` and that the user belongs to the internal crowd directory.
-After creating the user you have to add the following groups:
-
-| Group              |
-| ------------------ |
-| opendevstack-users |
-| bitbucket-users    |
-
-After you have created the user in crowd, you must add the public cd_user SSH key to the Bitbucket account.
+Now we need to add the ssh public key to the Bitbucket CD user.
 
 Open [Bitbucket](http://192.168.56.31:7990/), login with your crowd administration user and go to the administration.
 Here open the User section. If you can't see the CD user, you have to synchronize the Crowd directory in the **User directories** section.
@@ -858,7 +869,7 @@ For initial code commit the CD user's private key has to be stored in Rundeck, t
 #### Configure SCM plugins
 
 Within the ods-project-quickstarters create a new branch called `rundeck-changes` - and let it inherit from production
-<!-- 
+<!--
 TODO: verify the branch source is correct!
 END_TODO
 -->
@@ -901,10 +912,10 @@ project.globals.openshift_dockerregistry=https://docker-registry-default.192.168
 # os user and group rundeck is running with
 project.globals.rundeck_os_user=root:root
 ```
-### Add shared images 
+### Add shared images
 OpenDevStack provides shared images used accross the stack - like the authproxy based on NGINX and lua for crowd
 
-In order to install, create a new project called `shared-services` 
+In order to install, create a new project called `shared-services`
 
 Make the required customizations in the `ods-configuration` under **ods-core > shared-images > nginx-authproxy-crowd >  ocp-config > bc.env and secret.env**
 

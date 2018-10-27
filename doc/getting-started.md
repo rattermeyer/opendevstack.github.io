@@ -1,54 +1,8 @@
 ---
 layout: documentation
-tags: documentation
 ---
 
 # Getting started
-<!-- TOC depthFrom:1 depthTo:4 withLinks:1 updateOnSave:1 orderedList:0 -->
-<!--
-- [Getting started](#getting-started)
-	- [Introduction](#introduction)
-	- [Requirements](#requirements)
-		- [Git](#git)
-		- [Vagrant](#vagrant)
-		- [Virtualbox](#virtualbox)
-		- [Atlassian tools licenses](#atlassian-tools-licenses)
-		- [Minishift](#minishift)
-		- [Bash](#bash)
-		- [Ansible](#ansible)
-	- [Setup your local environment](#setup-your-local-environment)
-		- [Prepare infrastructure](#prepare-infrastructure)
-		- [Install Atlassian Tools and Rundeck](#install-atlassian-tools-and-rundeck)
-			- [Crowd Setup](#crowd-setup)
-			- [Bitbucket Setup](#bitbucket-setup)
-			- [Jira Setup](#jira-setup)
-			- [Confluence Setup](#confluence-setup)
-			- [Rundeck Setup](#rundeck-setup)
-		- [Configure Minishift](#configure-minishift)
-			- [Minishift startup](#minishift-startup)
-			- [Install the OC CLI](#install-the-oc-cli)
-			- [Login with the CLI](#login-with-the-cli)
-			- [Setup the base template project](#setup-the-base-template-project)
-			- [Adjust user rights for the developer user](#adjust-user-rights-for-the-developer-user)
-			- [Create service account for deployment](#create-service-account-for-deployment)
-			- [Install Minishift certificate on Atlassian server](#install-minishift-certificate-on-atlassian-server)
-		- [Setup and Configure Nexus3](#setup-and-configure-nexus3)
-			- [Configure Repository Manager](#configure-repository-manager)
-		- [Import base templates](#import-base-templates)
-		- [Configure CD user](#configure-cd-user)
-		- [Setup and Configure Sonarqube](#setup-and-configure-sonarqube)
-		- [Configure Rundeck](#configure-rundeck)
-			- [Create Quickstarters project](#create-quickstarters-project)
-			- [Openshift API token](#openshift-api-token)
-			- [CD user private key](#cd-user-private-key)
-			- [Configure SCM plugins](#configure-scm-plugins)
-		- [Configure provisioning application](#configure-provisioning-application)
-	- [Try out the OpenDevStack](#try-out-the-opendevstack)
-	- [Troubleshooting](troubleshooting.md)
-
--->
-<!-- /TOC -->
-
 
 ## Introduction
 Welcome to the OpenDevStack. The OpenDevStack is a framework to help in setting up a project infrastructure and continuous delivery processes on OpenShift and Atlassian toolstack with one click. This guide shall help you to setup the OpenDevStack, so you can work with it and test it in a local environment setup. The steps for the setup can also be adapted for running the OpenDevstack with an existing OpenShift installation or to connect it with your Atlassian tools, if you use [Atlassian Crowd](https://www.atlassian.com/software/crowd "Atlassian Crowd") as SSO provider.
@@ -234,11 +188,11 @@ In the following wizard enter the data for the application you want to add. See 
 
 | Application type    | Name       | Password   | URL                               | IP address    | Directories                                 | Authorisation | Additional Remote Adresses |
 | ------------------- | ---------- | ---------- | --------------------------------- | ------------- | ------------------------------------------- | ------------- | -------------------------- |
-| Jira                | jira       | jira       | http://192.168.56.31:8080         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0 |
-| Confluence          | confluence | confluence | http://192.168.56.31:8090         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0 |
-| Bitbucket Server    | bitbucket  | bitbucket  | http://192.168.56.31:7990         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0 |
-| Generic application | rundeck    | secret     | http://192.168.56.31:4440/rundeck | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0 |
-| Generic application | provision  | provision  | http://192.168.56.1:8088             | 192.168.56.1  | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0 |
+| Jira                | jira       | jira       | http://192.168.56.31:8080         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0                  |
+| Confluence          | confluence | confluence | http://192.168.56.31:8090         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0                  |
+| Bitbucket Server    | bitbucket  | bitbucket  | http://192.168.56.31:7990         | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0                  |
+| Generic application | rundeck    | secret     | http://192.168.56.31:4440/rundeck | 192.168.56.31 | Internal directory with OpenDevStack groups | all users     | 0.0.0.0/0                  |
+| Generic application | provision  | provision  | http://192.168.56.1:8088             | 192.168.56.1  | Internal directory with OpenDevStack groups | all users  | 0.0.0.0/0                  |
 
 #### Bitbucket Setup
 
@@ -650,6 +604,10 @@ find ods-configuration -name '*.sample' -type f | while read NAME ; do mv "${NAM
 Now you will have to check the `.env` configuration files in `ods-configuration`. Change all values with the suffix `_base64` to a Base64 encoded value.  
 
 ### Setup and Configure Nexus3
+If you are running on minishift, then you need to adopt the Storage settings.
+Basically, you must remove the storage related annotations from `ods-core/nexus/ocp-config/pvc.yml`
+and also the variable definitions `STORAGE_*`in `ods-configuration/ods-core/nexus/oc-config/pvc.env`
+
 Amend `ods-configuration/ods-core/nexus/ocp-config/route.env` and change the domain to match your openshift/minishift domain (for example `nexus-cd.192.168.99.100.nip.io`)
 
 Go to `ods-core/nexus/ocp-config` - and type
@@ -953,6 +911,7 @@ Create 3 openshift projects projects
 
 Start with prov-cd and issue
 ``` bash
+tailor update pvc/jenkins
 tailor update
 ```
 
@@ -960,6 +919,7 @@ Add `prov-cd/jenkins` and `prov-cd/default` service accounts with edit rights in
 
 For the runtime projects (prov-test and prov-dev) run
 ``` bash
+tailor update pvc
 tailor update
 ```
 

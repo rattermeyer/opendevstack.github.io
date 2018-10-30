@@ -9,6 +9,8 @@ Welcome to the OpenDevStack. The OpenDevStack is a framework to help in setting 
 
 **Important: The credentials provided in the guide are only meant to be used within the local test installation. For use in production you will have to customize paths, URLs and credentials!**
 
+If you encounter problems while working through this guide, have a look at our [Troubeshooting Guide](troubleshooting) where we collect solution to problems that you might encounter.
+
 ## Requirements
 The following requirements have to be met to setup a local environment
 ### Git
